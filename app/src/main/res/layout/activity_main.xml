@@ -4,14 +4,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#1E88E5">
+    android:background="#0F172A"
+    android:paddingTop="18dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:padding="16dp">
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="12dp">
 
         <TextView
             android:id="@+id/tvBest"
@@ -19,7 +22,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Recorde: --"
-            android:textColor="#FFFFFF"
+            android:textColor="#F8FAFC"
             android:textSize="20sp"
             android:textStyle="bold" />
 
@@ -27,28 +30,37 @@
             android:id="@+id/btnHistory"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Histórico" />
+            android:backgroundTint="#38BDF8"
+            android:text="Histórico"
+            android:textColor="#082F49" />
     </LinearLayout>
 
     <com.dpdm.reflexoapp.ReactionView
         android:id="@+id/reactionView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp" />
 
     <TextView
         android:id="@+id/tvSensorHint"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:padding="8dp"
+        android:padding="10dp"
         android:text="Mexa o celular para começar"
-        android:textColor="#FFFFFF" />
+        android:textColor="#F8FAFC"
+        android:textSize="16sp" />
 
     <Button
         android:id="@+id/btnStart"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:text="Iniciar" />
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="#22C55E"
+        android:text="Iniciar"
+        android:textColor="#052E16" />
 </LinearLayout>

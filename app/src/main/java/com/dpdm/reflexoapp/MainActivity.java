@@ -87,10 +87,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         if (sm != null) {
             ac = sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         }
+        if (ac == null) {
+            tvSensorHint.setText("Este dispositivo não possui sensor de aceleração.");
+        }
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (!hasLocationPermission()) {
             requestPermissions(new String[]{
                     Manifest.permission.ACCESS_FINE_LOCATION,
                     Manifest.permission.ACCESS_COARSE_LOCATION
@@ -199,9 +202,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         listView.setAdapter(adapter);
     }
 
+    private boolean hasLocationPermission() {
+        return checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                || checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+    }
+
     @SuppressLint("MissingPermission")
     private void iniciarGPS() {
-        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+        if (hasLocationPermission()) {
             if (locationManager != null) {
                 try {
                     locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000L, 1f, locationListener);
@@ -214,8 +222,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                         currentLatitude = bestLoc.getLatitude();
                         currentLongitude = bestLoc.getLongitude();
                     }
-                } catch (Exception ignored) {}
+                } catch (Exception ignored) {
+                    tvSensorHint.setText("Não foi possível obter a localização do dispositivo.");
+                }
             }
+        } else {
+            tvSensorHint.setText("Localização negada. O jogo continua funcionando sem GPS.");
         }
     }
 
@@ -250,8 +262,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == 1 && grantResults.length > 0 && checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            iniciarGPS();
+        if (requestCode == 1) {
+            if (hasLocationPermission()) {
+                iniciarGPS();
+            } else {
+                tvSensorHint.setText("Permissão de localização negada. O jogo segue funcionando sem GPS.");
+            }
         }
     }
 
@@ -261,6 +277,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         if (sm != null && ac != null) {
             sm.registerListener(this, ac, SensorManager.SENSOR_DELAY_NORMAL);
         }
+        if (hasLocationPermission()) {
+            iniciarGPS();
+        }
     }
 
     @Override
@@ -269,7 +288,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         if (sm != null) {
             sm.unregisterListener(this);
         }
-        if (locationManager != null && checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+        if (locationManager != null && hasLocationPermission()) {
             locationManager.removeUpdates(locationListener);
         }
     }
